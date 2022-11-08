@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @RestController
 @RequestMapping("/shop")
@@ -30,6 +31,15 @@ public class ShopController {
         return shopService.getProduct(id);
     }
 
+    @PostMapping("/products/addProduct")
+    public Product addProduct(@RequestBody Product product){
+        /*Random random = new Random();
+        int rand = random.nextInt(1000, 10000);
+        String id = String.valueOf(rand);*/
+        shopService.listProducts().add(product);
+        return product;
+    }
+
     @GetMapping("/orders")
     public List<Order> getOrders(){
         return shopService.listOrders();
@@ -40,9 +50,23 @@ public class ShopController {
         return shopService.getOrder(id);
     }
 
-    @PostMapping("/orders/addorder")
-    public Order addOrder(@RequestBody String orderId, @RequestBody List<String> ids){
-        return shopService.addOrder(orderId, ids);
+    @DeleteMapping(path = "/orders/{id}")
+    public Order deleteOrder(@PathVariable String id){
+        for(Order o : shopService.listOrders()){
+            if(o.getId().equals(id)){
+                shopService.listOrders().remove(o);
+                return o;
+            }
+        }
+        return null;
     }
 
+    @PostMapping("/orders/addorder")
+    public Order addOrder(@RequestBody List<String> ids){
+        int counter = 1;
+        String id = String.valueOf(counter);
+        shopService.addOrder(id, ids);
+        counter++;
+        return shopService.addOrder(id, ids);
+    }
 }

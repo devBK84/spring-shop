@@ -46,11 +46,11 @@ public class Product {
         return result;
     }
 
-    @Override
+    /*@Override
     public String toString() {
         return "Product{" +
                 "name='" + name + '\'' +
                 ", id='" + id + '\'' +
                 '}';
-    }
+    }*/
 }

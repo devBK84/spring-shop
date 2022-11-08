@@ -20,6 +20,11 @@ public class ShopService {
         this.productRepository = productRepository;
     }
 
+    public Product addProduct(Product product){
+        productRepository.list().add(product);
+        return product;
+    }
+
     public Product getProduct(String id) {
         return productRepository.get(id);
     }
