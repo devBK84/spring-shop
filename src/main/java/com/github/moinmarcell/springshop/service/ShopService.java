@@ -12,8 +12,8 @@ import java.util.List;
 @Service
 public class ShopService {
 
-    private OrderRepository orderRepository;
-    private ProductRepository productRepository;
+    private final OrderRepository orderRepository;
+    private final ProductRepository productRepository;
 
     public ShopService(OrderRepository orderRepository, ProductRepository productRepository) {
         this.orderRepository = orderRepository;
