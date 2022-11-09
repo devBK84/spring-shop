@@ -1,12 +1,18 @@
 package com.github.moinmarcell.springshop.controller;
 
+import com.github.moinmarcell.springshop.model.Order;
 import com.github.moinmarcell.springshop.model.Product;
+import com.github.moinmarcell.springshop.repository.OrderRepository;
 import com.github.moinmarcell.springshop.repository.ProductRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.Collections;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
@@ -28,6 +34,8 @@ class ShopControllerTest {
 
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private OrderRepository orderRepository;
 
     @Test
     void getAllProducts_whenNoProductsInDB_thenReturnEmptyList() throws Exception {
@@ -70,7 +78,58 @@ class ShopControllerTest {
 
     @Test
     void addProduct() throws Exception {
-        productRepository.add().
+        mvc.perform(post("/shop/products/addProduct")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(
+                                """
+                                        {
+                                        "name": "Birne",
+                                        "id": "1"      
+                                        }
+                                        """))
+                .andExpect(status().isOk())
+                .andExpect(content().json("""
+                        {
+                        "name": "Birne",
+                        "id": "1"
+                        }
+                        """));
+    }
+
+    @Test
+    @DirtiesContext
+    void getOrder() throws Exception {
+        orderRepository.list().add(new Order("8", Collections.emptyList()));
+        mvc.perform(get("/shop/orders/8"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(
+                        """
+                                {
+                                "id": "8",
+                                "products": []
+                                                                
+                                }
+                                """
+
+                ));
+
+    }
+
+    @Test
+    void addOrder() throws Exception {
+        mvc.perform(post("/shop/orders/addorder")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                     []
+                                     
+                                """))
+                .andExpect(status().isOk())
+                .andExpect(content().json("""
+                        {
+                        "id": "1",
+                        "products": []
+                        }
+                        """));
     }
 }
 
